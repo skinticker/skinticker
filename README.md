@@ -34,7 +34,7 @@ Python, SQLite, Docker Compose. No external services beyond the price APIs.
 ## Quick start (Docker Compose)
 
 ```bash
-git clone https://github.com/<user>/skinticker.git && cd skinticker
+git clone https://github.com/skinticker/skinticker.git && cd skinticker
 cp .env.example .env      # fill in your CSFloat API key (+ optional Telegram etc.)
 docker compose up -d --build
 # Dashboard: http://localhost:8080
