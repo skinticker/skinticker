@@ -1,0 +1,69 @@
+services:
+  csfloat-sniper:
+    build: .
+    container_name: csfloat-sniper
+    restart: unless-stopped
+    # Feste DNS-Server: Synology-Container koennen sonst zeitweise Hostnamen nicht
+    # aufloesen ("Temporary failure in name resolution") -> csfloat.com/steamcommunity.com
+    # nicht erreichbar. 8.8.8.8/1.1.1.1 = Google/Cloudflare.
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    env_file:
+      - .env
+    volumes:
+      # Alle veraenderlichen Zustandsdaten (DB + JSON) liegen gemeinsam in data/.
+      - ./data:/app/data
+    healthcheck:
+      # Gesund, solange der Heartbeat juenger ist als 3x Poll-Intervall (min. 15 Min).
+      test: ["CMD-SHELL", "python -c \"import os,sys,time; p='data/heartbeat_sniper'; m=max(3*int(os.getenv('POLL_INTERVAL_SECONDS','300')),900); sys.exit(0 if os.path.exists(p) and time.time()-os.path.getmtime(p)<m else 1)\""]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10m
+
+  inventory:
+    build: .
+    container_name: csfloat-inventory
+    command: ["python", "inventory_main.py"]
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    env_file:
+      - .env
+    volumes:
+      # Schreibt Auto-Kaufpreise, realisierte Bilanz, Steam-Trades & CSFloat-Hold nach data/.
+      - ./data:/app/data
+    healthcheck:
+      # Gesund, solange der Heartbeat juenger ist als 3x Bewertungs-Intervall (min. 2 h).
+      test: ["CMD-SHELL", "python -c \"import os,sys,time; p='data/heartbeat_inventory'; m=max(3*int(os.getenv('INVENTORY_INTERVAL_SECONDS','3600')),7200); sys.exit(0 if os.path.exists(p) and time.time()-os.path.getmtime(p)<m else 1)\""]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 30m
+
+  dashboard:
+    build: .
+    container_name: csfloat-dashboard
+    command: ["python", "dashboard_server.py"]
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    volumes:
+      # data/ ist rw: der "Preise aktualisieren"- und der "EK & Bilanz abgleichen"-Button
+      # schreiben Analyse-Ergebnisse, Kaufpreise & Bilanz hierhin; Watchlist/Einstellungen/
+      # Ausschluesse ebenso. Ein gemeinsames Volume statt fragiler Einzeldatei-Mounts.
+      - ./data:/app/data
+    healthcheck:
+      # /healthz ist ohne Auth erreichbar (reine Liveness, gibt keine Daten preis).
+      test: ["CMD-SHELL", "python -c \"import urllib.request,os; urllib.request.urlopen('http://localhost:' + os.getenv('DASHBOARD_PORT','8080') + '/healthz', timeout=5)\""]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

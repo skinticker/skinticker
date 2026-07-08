@@ -1,0 +1,12 @@
+# Geheimnisse – niemals committen
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Laufzeitdaten (DB, Watchlist, Settings, Caches, Heartbeats) – werden von der
+# App selbst angelegt. Nur der leere Ordner wird mitgeliefert (.gitkeep).
+data/*
+!data/.gitkeep
