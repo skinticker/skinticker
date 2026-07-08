@@ -19,14 +19,14 @@ Die drei Dienste teilen sich eine SQLite-Datenbank (`data/prices.db`):
 1. Stelle sicher, dass die Werte stimmen:
    - `.env`: `CSFLOAT_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`,
      `STEAM_LOGIN_SECURE` (optional).
-   - `data/settings.json`: Deal- und Alarm-Schwelle (aktuell 35 / 38).
+   - `data/settings.json`: Deal- und Alarm-Schwelle (Standard 3 / 10, im Dashboard editierbar).
    - `data/watchlist.json`: die gesuchten Skins.
 2. Diese Dateien/Ordner brauchen wir auf dem NAS (alles **ausser** `venv/`):
    - Alle `*.py`-Dateien
    - `dashboard/` (Ordner mit `index.html`)
    - `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `requirements.txt`
    - `.env`  (Geheimnisse – separat behandeln, s.u.)
-   - `data/`  ← **wichtig**: enthaelt die DB (`prices.db`, fast 1 Jahr History) UND alle
+   - `data/`  ← **wichtig**: enthaelt die DB (`prices.db`, deine gesamte History) UND alle
      veraenderlichen Zustandsdateien (`settings.json`, `watchlist.json`, `buy_prices.json`,
      `auto_buy_prices.json`, `realized_pnl.json`, `steam_trades.json`, `csfloat_hold.json`,
      `excluded_trades.json`, `manual_items.json`, …). Alle drei Container teilen sich dieses
