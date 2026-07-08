@@ -82,6 +82,22 @@ run — no restart needed.
   → Security → "Sign out on all devices" (invalidates all sessions instantly),
   then grab a fresh cookie.
 
+## Telegram alerts setup (optional)
+
+Alerts go to **your own** Telegram bot — nothing is shared, no central service:
+
+1. In Telegram, open [@BotFather](https://t.me/BotFather) → send `/newbot` →
+   pick a name and username. BotFather replies with your **bot token** →
+   put it in `.env` as `TELEGRAM_BOT_TOKEN`.
+2. Get your **chat ID**: open [@userinfobot](https://t.me/userinfobot) and send
+   any message — it replies with your numeric ID → `TELEGRAM_CHAT_ID` in `.env`.
+   (For a group: add your bot to the group and use the group's ID instead.)
+3. **Important:** send your new bot one message (e.g. `/start`) — bots cannot
+   message you first.
+4. Restart the containers, then use the "Test Telegram" button in the dashboard.
+
+Leave both variables empty to disable alerts entirely.
+
 ## Trade history setup (optional)
 
 Steam's official Web API does not return the item contents of trades, so this
