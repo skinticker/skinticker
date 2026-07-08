@@ -4,6 +4,8 @@
 your item-for-item trades. Runs wherever you want: PC, server, or NAS. No
 account, no cloud, your data stays with you.**
 
+![SkinTicker dashboard](docs/Screenshot.png)
+
 SkinTicker watches CSFloat for cheap buy-now listings, compares them against
 the Steam Community Market price, alerts you on good deals via Telegram, and
 tracks the value of your inventory over time — including automatic cost basis
